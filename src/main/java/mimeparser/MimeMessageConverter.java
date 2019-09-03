@@ -145,6 +145,20 @@ public class MimeMessageConverter {
 			}
 		}
 		
+		String[] recipientsCopy = new String[0];
+		String recipientsCopyRaw = message.getHeader("Cc", null);
+		if (!Strings.isNullOrEmpty(recipientsCopyRaw)) {
+			try {
+				recipientsCopyRaw = MimeUtility.unfold(recipientsRaw);
+				recipientsCopy = recipientsCopyRaw.split(",");
+				for (int i = 0; i < recipientsCopy.length; i++) {
+					recipientsCopy[i] = MimeUtility.decodeText(recipientsCopy[i]);
+				}
+			} catch (Exception e) {
+				// ignore this error
+			}
+		}
+		
 		String sentDateStr = message.getHeader("date", null);
 		
 		/* ######### Parse the mime structure ######### */
